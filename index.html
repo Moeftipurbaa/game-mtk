@@ -1,0 +1,912 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Rage Platformer | SMK Kelas XI</title>
+<meta name="description" content="2D Rage Platformer - Kuis Matematika SMK Kelas XI">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{background:#04040f;display:flex;align-items:center;justify-content:center;min-height:100vh;overflow:hidden;user-select:none;-webkit-user-select:none}
+#gw{position:relative;width:800px;height:500px;flex-shrink:0}
+#gc{display:block;width:800px;height:500px;border:3px solid #3949ab;border-radius:3px;image-rendering:pixelated;image-rendering:crisp-edges;box-shadow:0 0 40px #3949ab55,0 0 80px #3949ab22}
+#hud{position:absolute;top:8px;left:8px;right:8px;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none;z-index:20}
+#lw{background:rgba(0,0,0,.72);border:2px solid rgba(255,255,255,.12);border-radius:8px;padding:6px 10px;display:flex;gap:5px}
+.hi{font-size:20px;line-height:1;transition:all .3s}.hi.e{filter:grayscale(1)brightness(.3);transform:scale(.75)}
+#pw{background:rgba(0,0,0,.72);border:2px solid rgba(255,255,255,.12);border-radius:8px;padding:6px 10px;min-width:180px}
+#pl{font-family:'Press Start 2P',monospace;font-size:6px;color:#90caf9;margin-bottom:4px}
+#pbg{width:100%;height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden}
+#pf{height:100%;background:linear-gradient(90deg,#1565c0,#7b1fa2,#c62828);border-radius:4px;width:0%;transition:width .3s}
+#pp{font-family:'Press Start 2P',monospace;font-size:6px;color:#ccc;margin-top:2px;text-align:right}
+#qo{position:absolute;inset:0;background:rgba(2,4,22,.94);backdrop-filter:blur(8px);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:50;padding:18px;gap:10px}
+#qo.on{display:flex}
+#qbdg{font-family:'Press Start 2P',monospace;font-size:7px;padding:4px 14px;border-radius:20px;letter-spacing:1px}
+#qq{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 18px;max-width:720px;width:100%;font-family:'Press Start 2P',monospace;font-size:9px;color:#e8eaf6;line-height:2;text-align:center;white-space:pre-line}
+#qtr{display:flex;align-items:center;gap:10px;width:100%;max-width:720px}
+#qtbg{flex:1;height:9px;background:rgba(255,255,255,.1);border-radius:5px;overflow:hidden}
+#qtf{height:100%;border-radius:5px;transition:width .1s linear,background .3s}
+#qtn{font-family:'Press Start 2P',monospace;font-size:11px;min-width:28px;text-align:right;color:#eee}
+#qopts{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;max-width:720px}
+.qb{font-family:'Press Start 2P',monospace;font-size:7px;padding:12px;border-radius:8px;border:2px solid;cursor:pointer;text-align:left;line-height:1.9;transition:all .15s;background:transparent;color:#e8eaf6}
+.qb:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.2)}.qb:disabled{cursor:not-allowed}
+.qb.ok{background:rgba(76,175,80,.25)!important;border-color:#4caf50!important;color:#c8e6c9!important}
+.qb.ng{background:rgba(244,67,54,.25)!important;border-color:#f44336!important;color:#ffcdd2!important}
+#qfb{font-family:'Press Start 2P',monospace;font-size:9px;height:18px;text-align:center}
+.fs{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:80;padding:28px;gap:13px}
+.fs.on{display:flex}
+#ss{background:linear-gradient(155deg,#07091a,#0b0620)}
+.btit{font-family:'Press Start 2P',monospace;text-align:center;line-height:1.8;background:linear-gradient(90deg,#42a5f5,#7e57c2,#e91e63);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stxt{font-family:'Press Start 2P',monospace;font-size:7px;color:#607d8b;text-align:center;line-height:2.3}
+.gbtn{font-family:'Press Start 2P',monospace;border:none;border-radius:6px;cursor:pointer;transition:all .2s}
+.gbtn:hover{transform:translateY(-3px)}
+.bp{font-size:11px;padding:13px 30px;background:linear-gradient(135deg,#1565c0,#4a148c);color:#e3f2fd;box-shadow:0 4px 20px #1565c055}
+.bd{font-size:11px;padding:13px 30px;background:linear-gradient(135deg,#b71c1c,#880e4f);color:#ffcdd2;box-shadow:0 4px 20px #b71c1c55}
+.bg2{font-size:11px;padding:13px 30px;background:linear-gradient(135deg,#1b5e20,#004d40);color:#c8e6c9;box-shadow:0 4px 20px #1b5e2055}
+.ch{font-family:'Press Start 2P',monospace;font-size:6px;color:#37474f;text-align:center;line-height:2.2}
+.dv{width:80%;height:1px;background:rgba(255,255,255,.08)}
+#gs{background:linear-gradient(155deg,#1a0000,#0a0008)}
+#got{font-family:'Press Start 2P',monospace;font-size:26px;color:#e53935;text-shadow:0 0 30px #e53935;animation:gp .8s infinite alternate}
+#gom{font-family:'Press Start 2P',monospace;font-size:8px;color:#ef9a9a;text-align:center;line-height:2.5;max-width:620px}
+@keyframes gp{from{transform:scale(1)}to{transform:scale(1.06)}}
+#ws{background:linear-gradient(155deg,#001600,#000a18)}
+#wt{font-family:'Press Start 2P',monospace;font-size:20px;color:#66bb6a;text-shadow:0 0 25px #66bb6a;animation:wr 2s infinite}
+#wm{font-family:'Press Start 2P',monospace;font-size:8px;color:#a5d6a7;text-align:center;line-height:2.5;max-width:600px}
+#wst{font-family:'Press Start 2P',monospace;font-size:7px;color:#80cbc4;text-align:center;line-height:2.3;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 20px}
+@keyframes wr{0%{color:#66bb6a;text-shadow:0 0 25px #66bb6a}33%{color:#ffd54f;text-shadow:0 0 25px #ffd54f}66%{color:#42a5f5;text-shadow:0 0 25px #42a5f5}100%{color:#66bb6a;text-shadow:0 0 25px #66bb6a}}
+@keyframes csk{0%,100%{transform:translate(0)}20%{transform:translate(-5px,2px)}40%{transform:translate(5px,-2px)}60%{transform:translate(-3px,3px)}80%{transform:translate(3px,-3px)}}
+.csk{animation:csk .35s ease}
+</style>
+</head>
+<body>
+<div id="gw">
+<canvas id="gc" width="800" height="500"></canvas>
+<div id="hud">
+  <div id="lw"><span class="hi" id="h1">❤️</span><span class="hi" id="h2">❤️</span><span class="hi" id="h3">❤️</span></div>
+  <div id="pw"><div id="pl">🏁 MENUJU FINISH</div><div id="pbg"><div id="pf"></div></div><div id="pp">0%</div></div>
+</div>
+<div id="qo">
+  <span id="qbdg"></span><div id="qq"></div>
+  <div id="qtr"><div id="qtbg"><div id="qtf"></div></div><div id="qtn">15</div></div>
+  <div id="qopts">
+    <button class="qb" id="qb0" onclick="answerQ(0)"></button>
+    <button class="qb" id="qb1" onclick="answerQ(1)"></button>
+    <button class="qb" id="qb2" onclick="answerQ(2)"></button>
+    <button class="qb" id="qb3" onclick="answerQ(3)"></button>
+  </div>
+  <div id="qfb"></div>
+</div>
+<div class="fs" id="ss">
+  <div class="btit" style="font-size:15px">⚡ MATH RAGE<br>PLATFORMER</div>
+  <div class="dv"></div>
+  <div class="stxt">🎓 Kuis Matematika SMK Kelas XI<br>💀 3 Nyawa · Permadeath · Pure Rage Mode<br>📐 Logika · Matriks · Barisan · Persamaan Kuadrat<br>⚠️ Peringatan: Game ini menyita emosi!</div>
+  <button class="gbtn bp" onclick="startGame()">▶ MULAI GAME</button>
+  <div class="ch">← → / A D : Gerak &nbsp;|&nbsp; ↑ / W / Space : Lompat<br>A B C D : Keyboard shortcut jawab kuis</div>
+</div>
+<div class="fs" id="gs">
+  <div id="got">💀 GAME OVER</div><div class="dv"></div>
+  <div id="gom"></div>
+  <button class="gbtn bd" onclick="restartGame()">🔄 COBA LAGI</button>
+</div>
+<div class="fs" id="ws">
+  <div id="wt">🏆 SELAMAT!</div><div class="dv"></div>
+  <div id="wm">Kamu berhasil menyelesaikan<br>Math Rage Platformer! 🎉</div>
+  <div id="wst"></div>
+  <button class="gbtn bg2" onclick="restartGame()">🔄 MAIN LAGI</button>
+</div>
+</div>
+<script>
+'use strict';
+// ════════════════════════════════════════════
+//  MATH RAGE PLATFORMER  ·  SMK Kelas XI
+//  HTML5 Canvas + Vanilla JS + Web Audio API
+// ════════════════════════════════════════════
+const CW=800,CH=500,GY=432,PW=24,PH=32;
+const GRAV=0.58,JF=-13.2,WS=4.2,MXF=18,CT=8;
+const WW=6000,FX=5700;
+
+// ── Sprite Storage ──
+var SPR={};
+
+// ── Build Pixel-Art Sprite Sheets Programmatically ──
+function buildSprites(){
+  var i,f,ox;
+
+  // === PLAYER SPRITE SHEET ===
+  // 5 frames x 16x24px: [stand, walk1, walk2, walk3, jump]
+  // Uses ctx.drawImage() 9-param for rendering (src spritesheet slice)
+  var pFW=16,pFH=24;
+  var ps=document.createElement('canvas');
+  ps.width=pFW*5; ps.height=pFH;
+  var pc=ps.getContext('2d');
+  pc.imageSmoothingEnabled=false;
+  // Walk leg offsets per frame [lx,ly,lw,lh, rx,ry,rw,rh]
+  var wLeg=[[3,17,5,7,8,17,5,7],[2,16,5,9,9,17,5,6],[3,17,5,6,8,16,5,9],[3,17,5,7,8,17,5,7],[2,18,6,6,8,18,6,6]];
+  for(f=0;f<5;f++){
+    ox=f*pFW;
+    // Hat
+    pc.fillStyle='#3949ab'; pc.fillRect(ox+3,0,10,4);
+    // Head
+    pc.fillStyle='#7986cb'; pc.fillRect(ox+2,3,12,8);
+    // Eye whites
+    pc.fillStyle='#ffffff'; pc.fillRect(ox+3,5,4,3); pc.fillRect(ox+9,5,4,3);
+    // Pupils (look right by default; flip handles left)
+    pc.fillStyle='#1a1a2e'; pc.fillRect(ox+5,6,2,2); pc.fillRect(ox+11,6,2,2);
+    // Body
+    pc.fillStyle='#5c6bc0'; pc.fillRect(ox+3,11,10,6);
+    // Arms: raised if jumping
+    pc.fillStyle='#7986cb';
+    if(f===4){pc.fillRect(ox+0,8,3,6); pc.fillRect(ox+13,8,3,6);}
+    else{pc.fillRect(ox+0,12,3,5); pc.fillRect(ox+13,12,3,5);}
+    // Belt
+    pc.fillStyle='#ffd54f'; pc.fillRect(ox+3,16,10,2);
+    // Legs
+    pc.fillStyle='#3949ab';
+    var lg=wLeg[f];
+    pc.fillRect(ox+lg[0],lg[1],lg[2],lg[3]);
+    pc.fillRect(ox+lg[4],lg[5],lg[6],lg[7]);
+    // Shoes
+    pc.fillStyle='#1a237e';
+    pc.fillRect(ox+lg[0]-1,lg[1]+lg[3]-2,lg[2]+2,3);
+    pc.fillRect(ox+lg[4]-1,lg[5]+lg[7]-2,lg[6]+2,3);
+  }
+  SPR.player=ps; SPR.pFW=pFW; SPR.pFH=pFH;
+
+  // === ENEMY SPRITE SHEET ===
+  // 2 frames x 16x16px walk animation
+  var es=document.createElement('canvas'); es.width=32; es.height=16;
+  var ec=es.getContext('2d'); ec.imageSmoothingEnabled=false;
+  for(f=0;f<2;f++){
+    ox=f*16;
+    ec.fillStyle='#e53935'; ec.fillRect(ox+1,3,14,11);
+    ec.fillRect(ox+3,0,4,4); ec.fillRect(ox+9,0,4,4);
+    ec.fillStyle='#ffffff'; ec.fillRect(ox+2,4,5,5); ec.fillRect(ox+9,4,5,5);
+    ec.fillStyle='#1a1a2e'; ec.fillRect(ox+3,5,3,3); ec.fillRect(ox+10,5,3,3);
+    ec.fillStyle='#b71c1c'; ec.fillRect(ox+2,3,5,2); ec.fillRect(ox+9,3,5,2);
+    ec.fillStyle='#b71c1c';
+    if(f===0){ec.fillRect(ox+2,13,5,3); ec.fillRect(ox+9,13,5,3);}
+    else{ec.fillRect(ox+4,13,5,3); ec.fillRect(ox+7,13,5,3);}
+    ec.fillStyle='rgba(255,255,255,0.2)'; ec.fillRect(ox+2,4,3,2); ec.fillRect(ox+10,4,2,2);
+  }
+  SPR.enemy=es;
+
+  // === GROUND TOP TILE (16x16, grass+dirt) ===
+  var gt=document.createElement('canvas'); gt.width=16; gt.height=16;
+  var gtc=gt.getContext('2d'); gtc.imageSmoothingEnabled=false;
+  gtc.fillStyle='#5d4037'; gtc.fillRect(0,0,16,16);
+  gtc.fillStyle='#388e3c'; gtc.fillRect(0,0,16,5);
+  gtc.fillStyle='#66bb6a';
+  gtc.fillRect(0,0,3,3); gtc.fillRect(6,0,3,4); gtc.fillRect(12,0,3,3);
+  gtc.fillRect(3,1,2,2); gtc.fillRect(9,1,2,2);
+  gtc.fillStyle='rgba(0,0,0,0.15)'; gtc.fillRect(0,8,16,1); gtc.fillRect(0,12,16,1);
+  SPR.ground=gt;
+
+  // === DIRT TILE (16x16) ===
+  var dt=document.createElement('canvas'); dt.width=16; dt.height=16;
+  var dtc=dt.getContext('2d'); dtc.imageSmoothingEnabled=false;
+  dtc.fillStyle='#5d4037'; dtc.fillRect(0,0,16,16);
+  dtc.fillStyle='rgba(0,0,0,0.18)';
+  dtc.fillRect(0,4,16,1); dtc.fillRect(0,9,16,1); dtc.fillRect(0,13,16,1);
+  dtc.fillRect(4,0,1,4); dtc.fillRect(10,5,1,4);
+  SPR.dirt=dt;
+
+  // === STATIC PLATFORM TILE (16x8) ===
+  var pt=document.createElement('canvas'); pt.width=16; pt.height=8;
+  var ptc2=pt.getContext('2d'); ptc2.imageSmoothingEnabled=false;
+  ptc2.fillStyle='#607d8b'; ptc2.fillRect(0,0,16,8);
+  ptc2.fillStyle='#90a4ae'; ptc2.fillRect(0,0,16,3);
+  ptc2.fillStyle='#455a64'; ptc2.fillRect(0,4,7,2); ptc2.fillRect(9,6,7,2);
+  ptc2.fillStyle='rgba(255,255,255,0.15)'; ptc2.fillRect(0,0,16,1);
+  SPR.platform=pt;
+
+  // === FALLING PLATFORM TILE (16x8, orange) ===
+  var flt=document.createElement('canvas'); flt.width=16; flt.height=8;
+  var fltc=flt.getContext('2d'); fltc.imageSmoothingEnabled=false;
+  fltc.fillStyle='#e65100'; fltc.fillRect(0,0,16,8);
+  fltc.fillStyle='#ff8f00'; fltc.fillRect(0,0,16,3);
+  fltc.fillStyle='#ffd54f'; fltc.fillRect(0,0,4,2); fltc.fillRect(8,1,4,1);
+  SPR.platFall=flt;
+
+  // === FAKE PLATFORM TILE (16x8, almost identical but with blue shimmer) ===
+  var fkp=document.createElement('canvas'); fkp.width=16; fkp.height=8;
+  var fkpc=fkp.getContext('2d'); fkpc.imageSmoothingEnabled=false;
+  fkpc.fillStyle='#607d8b'; fkpc.fillRect(0,0,16,8);
+  fkpc.fillStyle='#90a4ae'; fkpc.fillRect(0,0,16,3);
+  fkpc.fillStyle='rgba(255,255,255,0.15)'; fkpc.fillRect(0,0,16,1);
+  fkpc.fillStyle='rgba(100,180,255,0.15)'; fkpc.fillRect(0,0,16,8);
+  SPR.platFake=fkp;
+
+  // === SPIKE TILE (16x16, triangle) ===
+  var sk=document.createElement('canvas'); sk.width=16; sk.height=16;
+  var skc=sk.getContext('2d'); skc.imageSmoothingEnabled=false;
+  skc.fillStyle='#ef5350';
+  skc.beginPath(); skc.moveTo(0,16); skc.lineTo(8,0); skc.lineTo(16,16); skc.fill();
+  skc.fillStyle='rgba(255,255,255,0.3)';
+  skc.beginPath(); skc.moveTo(4,16); skc.lineTo(8,2); skc.lineTo(10,16); skc.fill();
+  skc.fillStyle='#c62828'; skc.fillRect(0,14,16,2);
+  SPR.spike=sk;
+}
+
+// ── Quiz Data ──
+var CATS=[
+  {name:'📘 LOGIKA & BOOLEAN',  col:'#42a5f5',brd:'#1565c0'},
+  {name:'📗 MATRIKS 2x2',       col:'#66bb6a',brd:'#2e7d32'},
+  {name:'📙 BARISAN & DERET',   col:'#ffa726',brd:'#e65100'},
+  {name:'📕 PERSAMAAN KUADRAT', col:'#ef5350',brd:'#b71c1c'},
+];
+var BANKS=[
+  [// 0: Logika & Boolean
+    {q:'Diketahui p = BENAR dan q = SALAH.\nNilai p AND q (Konjungsi) adalah...',opts:['BENAR','SALAH','Tidak Tentu','Tidak Terdefinisi'],ans:1},
+    {q:'Diketahui p = SALAH dan q = SALAH.\nNilai p OR q (Disjungsi) adalah...',opts:['BENAR','Tidak Tentu','SALAH','Selalu BENAR'],ans:2},
+    {q:'Negasi dari pernyataan:\n"Semua siswa lulus ujian" adalah...',opts:['Semua siswa tidak lulus','Tidak ada yang lulus','Sebagian lulus','Ada siswa yang tidak lulus'],ans:3},
+    {q:'Nilai p = BENAR, q = SALAH.\np => q (Implikasi) bernilai...',opts:['Tidak Tentu','BENAR','Bergantung','SALAH'],ans:3},
+    {q:'p = BENAR, q = BENAR.\nNilai p <=> q (Biimplikasi) adalah...',opts:['SALAH','BENAR','Tidak Tentu','Bergantung'],ans:1},
+    {q:'Kontraposisi dari:\n"Jika hujan, maka tanah basah" adalah...',opts:['Jika tanah basah => hujan','Jika tidak hujan => tanah tidak basah','Jika tanah tidak basah => tidak hujan','Jika tidak hujan => tanah basah'],ans:2},
+  ],
+  [// 1: Matriks 2x2
+    {q:'A=[[2,3],[1,4]], B=[[1,2],[3,1]]\nA + B = ?',opts:['[[3,5],[4,5]]','[[3,5],[4,4]]','[[2,6],[3,4]]','[[4,5],[3,5]]'],ans:0},
+    {q:'Determinan matriks\n[[3, 2], [1, 4]] = ?',opts:['14','10','12','8'],ans:1},
+    {q:'Determinan matriks\n[[5, 3], [2, 4]] = ?',opts:['26','16','20','14'],ans:3},
+    {q:'A=[[4,2],[3,1]], B=[[1,0],[2,3]]\nA - B = ?',opts:['[[5,2],[5,4]]','[[3,1],[1,-2]]','[[3,2],[1,-2]]','[[3,2],[2,-2]]'],ans:2},
+    {q:'Transpose dari matriks\n[[1, 2], [3, 4]] adalah...',opts:['[[4,3],[2,1]]','[[1,3],[2,4]]','[[2,1],[4,3]]','[[1,2],[3,4]]'],ans:1},
+  ],
+  [// 2: Barisan & Deret
+    {q:'Barisan aritmatika: 3, 7, 11, 15, ...\nSuku ke-10 adalah...',opts:['41','43','39','45'],ans:2},
+    {q:'Barisan geometri: 2, 6, 18, 54, ...\nSuku ke-5 adalah...',opts:['108','162','144','180'],ans:1},
+    {q:'Barisan aritmatika, a1=5, b=3.\nS10 (jumlah 10 suku pertama) = ?',opts:['175','195','165','185'],ans:3},
+    {q:'Barisan geometri: a=4, r=2.\nSuku ke-6 adalah...',opts:['64','256','128','512'],ans:2},
+    {q:'Barisan: 1, 4, 9, 16, 25, ...\nSuku ke-8 adalah...',opts:['36','81','49','64'],ans:3},
+  ],
+  [// 3: Persamaan Kuadrat
+    {q:'Akar-akar persamaan\nx^2 - 5x + 6 = 0 adalah...',opts:['x=-2 dan -3','x=1 dan 6','x=2 dan 3','x=-1 dan 6'],ans:2},
+    {q:'Akar-akar persamaan\nx^2 + x - 6 = 0 adalah...',opts:['x=2 dan -3','x=-2 dan 3','x=1 dan -6','x=6 dan -1'],ans:0},
+    {q:'Diskriminan x^2 - 4x + 4 = 0\nbernilai ... dan jenisnya ...',opts:['D=4, dua akar real','D=16, dua akar real','D=-4, tidak real','D=0, akar kembar'],ans:3},
+    {q:'Jumlah akar-akar\n2x^2 - 6x + 4 = 0 adalah...',opts:['2','4','3','-3'],ans:2},
+    {q:'Hasil kali akar-akar\nx^2 - 7x + 12 = 0 adalah...',opts:['7','-7','-12','12'],ans:3},
+  ],
+];
+var RAGES=[
+  'Dikit lagi sampai finish!\nHarus ulang dari awal ya... Hehehehe 😈',
+  'Matematikanya bikin bingung?\nAtau emang platformer-nya terlalu jago? 🎭',
+  'RESET TOTAL! Udah mati ke berapa kali nih?\nAyo semangat! 💀',
+  'Hampir! Hampiiir!\n...tapi ya tetap aja gagal. Gaskeun lagi! 😂',
+  'Start dari NOL lagi ya!\nKonsisten banget matinya, salut deh! 👏',
+  'AH MASA MATI DI SITU?!\nDi bagian yang sama pula... wow. 🤦',
+  'Matematika + Platform = PAIN.\nBuktikan kalau kamu lebih kuat! 💪',
+  'Nyawa habis! Belajar dari kesalahan itu penting... katanya. 📚',
+];
+
+// ── Level Builder ──
+function buildLevel(){
+  var gs=[
+    {x:-200,w:880},{x:1020,w:180},{x:1300,w:350},
+    {x:1750,w:550},{x:2440,w:120},{x:2700,w:560},
+    {x:3420,w:250},{x:3820,w:400},{x:5200,w:900},
+  ];
+  var plats=[
+    {x:200,y:GY-95,w:100,h:16,type:'static'},
+    {x:380,y:GY-80,w:80,h:16,type:'static'},
+    {x:520,y:GY-110,w:90,h:16,type:'static'},
+    // FAKE: looks like a shortcut but IS NOT SOLID
+    {x:340,y:GY-135,w:70,h:16,type:'fake'},
+    // Cross gap 680>1020
+    {x:700,y:GY-60,w:80,h:16,type:'falling'},
+    {x:820,y:GY-80,w:80,h:16,type:'static'},
+    {x:920,y:GY-55,w:80,h:16,type:'falling'},
+    // FAKE shortcut trap
+    {x:860,y:GY-125,w:80,h:16,type:'fake'},
+    // Zone 1
+    {x:1050,y:GY-95,w:100,h:16,type:'static'},
+    {x:1200,y:GY-70,w:80,h:16,type:'falling'},
+    {x:1310,y:GY-100,w:80,h:16,type:'static'},
+    {x:1480,y:GY-80,w:80,h:16,type:'static'},
+    // Cross gap 1650>1750
+    {x:1660,y:GY-70,w:80,h:16,type:'falling'},
+    {x:1720,y:GY-80,w:80,h:16,type:'static'},
+    // Spike zone platforms
+    {x:1820,y:GY-110,w:70,h:16,type:'static'},
+    {x:1950,y:GY-100,w:65,h:16,type:'static'},
+    {x:2075,y:GY-115,w:70,h:16,type:'static'},
+    {x:2200,y:GY-100,w:70,h:16,type:'static'},
+    // FAKE "safe" route over gap (RAGE TRAP!)
+    {x:2265,y:GY-65,w:80,h:16,type:'fake'},
+    // Cross gap 2300>2440
+    {x:2315,y:GY-80,w:80,h:16,type:'falling'},
+    {x:2400,y:GY-75,w:80,h:16,type:'static'},
+    // Cross gap 2560>2700
+    {x:2575,y:GY-80,w:80,h:16,type:'falling'},
+    {x:2660,y:GY-80,w:80,h:16,type:'falling'},
+    // Enemy rush platforms
+    {x:2790,y:GY-110,w:80,h:16,type:'static'},
+    {x:2940,y:GY-90,w:80,h:16,type:'static'},
+    {x:3090,y:GY-115,w:80,h:16,type:'static'},
+    // Cross gap 3260>3420
+    {x:3270,y:GY-80,w:80,h:16,type:'falling'},
+    {x:3370,y:GY-75,w:80,h:16,type:'static'},
+    // Cross gap 3670>3820
+    {x:3685,y:GY-80,w:80,h:16,type:'falling'},
+    {x:3760,y:GY-80,w:80,h:16,type:'falling'},
+    // FAKE trap near zone 4 start
+    {x:3795,y:GY-100,w:80,h:16,type:'fake'},
+    // Zone 4
+    {x:3880,y:GY-100,w:80,h:16,type:'static'},
+    {x:4050,y:GY-90,w:80,h:16,type:'static'},
+    // Final Gauntlet: all falling + fake traps
+    {x:4310,y:GY-80,w:90,h:16,type:'falling'},
+    {x:4460,y:GY-95,w:90,h:16,type:'falling'},
+    // FINAL RAGE: fake platform mid-gauntlet
+    {x:4530,y:GY-145,w:90,h:16,type:'fake'},
+    {x:4610,y:GY-75,w:90,h:16,type:'falling'},
+    {x:4760,y:GY-100,w:90,h:16,type:'falling'},
+    {x:4910,y:GY-80,w:90,h:16,type:'falling'},
+    {x:5060,y:GY-95,w:90,h:16,type:'falling'},
+    {x:5150,y:GY-75,w:90,h:16,type:'static'},
+  ];
+  var spikes=[
+    {x:1780,w:32},{x:1840,w:32},{x:1910,w:32},{x:1985,w:32},
+    {x:2055,w:32},{x:2135,w:32},{x:2210,w:32},
+    {x:2760,w:32},{x:2900,w:32},{x:3050,w:32},{x:3180,w:32},
+    {x:5290,w:32},{x:5420,w:32},{x:5530,w:32},{x:5640,w:32},
+  ].map(function(s){return{x:s.x,w:s.w,y:GY-16,h:16};});
+  var enemies=[
+    {x:580,y:GY-24,vx:1.2,px1:420,px2:668,alive:true},
+    {x:1380,y:GY-24,vx:1.8,px1:1310,px2:1630,alive:true},
+    {x:2730,y:GY-24,vx:2.2,px1:2700,px2:3000,alive:true},
+    {x:2940,y:GY-24,vx:2.5,px1:2820,px2:3100,alive:true},
+    {x:3150,y:GY-24,vx:2.0,px1:3040,px2:3260,alive:true},
+    {x:3870,y:GY-24,vx:2.8,px1:3820,px2:4110,alive:true},
+    {x:5260,y:GY-24,vx:2.0,px1:5200,px2:5500,alive:true},
+    {x:5600,y:GY-24,vx:2.5,px1:5450,px2:5700,alive:true},
+  ];
+  var gates=[
+    {x:680, cat:0,triggered:false,passed:false,qi:0},
+    {x:2295,cat:1,triggered:false,passed:false,qi:0},
+    {x:3255,cat:2,triggered:false,passed:false,qi:0},
+    {x:4280,cat:3,triggered:false,passed:false,qi:0},
+  ];
+  return {gs:gs,plats:plats,spikes:spikes,enemies:enemies,gates:gates};
+}
+
+// ── Canvas & State ──
+var CV=document.getElementById('gc');
+var X=CV.getContext('2d');
+X.imageSmoothingEnabled=false;
+var ST='START';
+var lives,pl,cam,lv,ptc=[],shk=0,dc=0,st0=0,cg=null,qtLeft=15,qtInt=null,qlk=false;
+var stars=[];
+// Pre-generate stars for start screen
+for(var _i=0;_i<120;_i++) stars.push({x:Math.random()*WW,y:Math.random()*200,r:Math.random()*1.5+.4});
+var cam={x:0};
+
+// ── Input ──
+var K={};
+document.addEventListener('keydown',function(e){
+  K[e.code]=true;
+  if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].indexOf(e.code)>=0) e.preventDefault();
+  if(ST==='QUIZ'&&!qlk){var m={KeyA:0,KeyB:1,KeyC:2,KeyD:3};if(m[e.code]!==undefined) answerQ(m[e.code]);}
+});
+document.addEventListener('keyup',function(e){K[e.code]=false;});
+
+// ── Web Audio API ──
+var AC=null;
+function initAudio(){if(!AC)try{AC=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}
+function beep(f,t,d,v,f2){
+  if(!AC)return;
+  var o=AC.createOscillator(),g=AC.createGain();
+  o.connect(g); g.connect(AC.destination);
+  o.type=t||'sine';
+  o.frequency.setValueAtTime(f,AC.currentTime);
+  if(f2) o.frequency.exponentialRampToValueAtTime(f2,AC.currentTime+(d||.15));
+  g.gain.setValueAtTime(v||.22,AC.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+(d||.15));
+  o.start(); o.stop(AC.currentTime+(d||.15));
+}
+function sfx(n){
+  if(!AC) return;
+  switch(n){
+    case'jump':  beep(260,'sine',.18,.2,520); break;
+    case'land':  beep(170,'triangle',.1,.15,65); break;
+    case'hit':   beep(120,'sawtooth',.4,.38,50); break;
+    case'stomp': beep(460,'sine',.2,.35,70); break;
+    case'quiz':  beep(880,'square',.08,.18,440); break;
+    case'gate':  beep(660,'sine',.45,.25,1320); break;
+    case'death': beep(280,'sawtooth',.9,.45,40); break;
+    case'ok':  [440,554,659,880].forEach(function(f,i){setTimeout(function(){beep(f,'sine',.25,.22);},i*90);}); break;
+    case'ng':  beep(200,'square',.12,.28,150); setTimeout(function(){beep(130,'sawtooth',.3,.28,85);},130); break;
+    case'win': [262,330,392,523,659,784,1047].forEach(function(f,i){setTimeout(function(){beep(f,'sine',.3,.25);},i*100);}); break;
+  }
+}
+
+// ── Particles ──
+function spawnPtc(wx,wy,col,n,spd){
+  n=n||8; spd=spd||3;
+  for(var i=0;i<n;i++){
+    var a=(Math.PI*2*i)/n+Math.random()*.5,s=spd+Math.random()*spd;
+    ptc.push({x:wx,y:wy,vx:Math.cos(a)*s,vy:Math.sin(a)*s-2,life:1,decay:.03+Math.random()*.03,r:4+Math.random()*4,col:col});
+  }
+}
+function updPtc(){
+  for(var i=ptc.length-1;i>=0;i--){
+    var p=ptc[i]; p.x+=p.vx; p.y+=p.vy; p.vy+=.2; p.life-=p.decay; p.r*=.97;
+    if(p.life<=0) ptc.splice(i,1);
+  }
+}
+function drwPtc(){
+  X.imageSmoothingEnabled=false;
+  for(var i=0;i<ptc.length;i++){
+    var p=ptc[i];
+    X.save(); X.globalAlpha=p.life; X.fillStyle=p.col;
+    X.beginPath(); X.arc(p.x-cam.x,p.y,p.r,0,Math.PI*2); X.fill(); X.restore();
+  }
+}
+
+// ── Init / Reset ──
+function initGame(){
+  lives=3; dc=0; st0=Date.now();
+  lv=buildLevel();
+  for(var i=0;i<lv.plats.length;i++){var p=lv.plats[i];p.oy=p.y;p.falling=false;p.fy=0;p.ft=0;}
+  resetPl(); cam={x:0}; ptc=[]; shk=0; cg=null; qlk=false;
+  clearInterval(qtInt);
+  stars=[]; for(var j=0;j<120;j++) stars.push({x:Math.random()*WW,y:Math.random()*200,r:Math.random()*1.5+.4});
+}
+function resetPl(){
+  pl={x:60,y:GY-PH,vx:0,vy:0,og:false,ct:0,pj:false,inv:0,flash:0,face:1,wf:0,wt:0,dying:false,dt:0};
+}
+
+// ── Player Update ──
+function updPl(){
+  if(pl.dying){
+    pl.dt++; pl.vy+=GRAV; pl.y+=pl.vy;
+    if(pl.dt>55){pl.dying=false;if(lives<=0)doGO();else resetPl();}
+    return;
+  }
+  var L=K.ArrowLeft||K.KeyA, R=K.ArrowRight||K.KeyD, J=K.ArrowUp||K.KeyW||K.Space;
+  if(L){pl.vx-=.85;pl.face=-1;} if(R){pl.vx+=.85;pl.face=1;}
+  pl.vx*=.82; if(Math.abs(pl.vx)<.1) pl.vx=0;
+  pl.vx=Math.max(-WS,Math.min(WS,pl.vx));
+  pl.vy+=GRAV; pl.vy=Math.min(pl.vy,MXF);
+  if((pl.og||pl.ct>0)&&J&&!pl.pj){
+    pl.vy=JF; pl.og=false; pl.ct=0;
+    sfx('jump'); spawnPtc(pl.x+PW/2,pl.y+PH,'#9575cd',5,2);
+  }
+  pl.pj=J;
+  if(pl.og) pl.ct=CT; else if(pl.ct>0) pl.ct--;
+  pl.og=false;
+  pl.x+=pl.vx; resX();
+  pl.y+=pl.vy; resY();
+  if(pl.x<0){pl.x=0;pl.vx=0;}
+  // Gate walls (physical barrier)
+  for(var gi=0;gi<lv.gates.length;gi++){
+    var g=lv.gates[gi];
+    if(!g.passed&&pl.x+PW>g.x-4&&pl.x<g.x+24&&pl.y+PH>40){pl.x=g.x-4-PW;pl.vx=0;}
+  }
+  // Fall into void = instant death
+  if(pl.y>CH+150){sfx('death');spawnPtc(pl.x+PW/2,CH/2,'#f44336',14,5);lives=0;dc++;doGO();return;}
+  // Spike collision = instant death
+  if(pl.inv<=0){
+    for(var si=0;si<lv.spikes.length;si++){
+      var s=lv.spikes[si];
+      if(rHit(pl.x,pl.y,PW,PH,s.x,s.y,s.w,s.h)){spawnPtc(pl.x+PW/2,pl.y+PH/2,'#f44336',14,5);sfx('death');lives=0;dc++;doGO();return;}
+    }
+  }
+  // Enemy collision
+  if(pl.inv<=0){
+    for(var ei=0;ei<lv.enemies.length;ei++){
+      var e=lv.enemies[ei];
+      if(!e.alive) continue;
+      if(!rHit(pl.x,pl.y,PW,PH,e.x,e.y,24,24)) continue;
+      if((pl.y+PH-pl.vy)<=e.y+8&&pl.vy>0){
+        // Stomp from above (Mario-style)
+        e.alive=false; pl.vy=JF*.65;
+        sfx('stomp'); spawnPtc(e.x+12,e.y+12,'#ff8f00',10,4);
+      }else{
+        // Hit from side
+        spawnPtc(pl.x+PW/2,pl.y+PH/2,'#f44336',8,3);
+        loseHeart(); pl.vx=(pl.x<e.x)?-7:7; pl.vy=-5; return;
+      }
+    }
+  }
+  // Quiz gate trigger
+  for(var qi2=0;qi2<lv.gates.length;qi2++){
+    var gt2=lv.gates[qi2];
+    if(!gt2.triggered&&!gt2.passed&&pl.x+PW>=gt2.x-90) triggerQuiz(gt2);
+  }
+  // Win condition
+  if(pl.x+PW>=FX) doWin();
+  if(pl.inv>0) pl.inv--; if(pl.flash>0) pl.flash--;
+  // Walk animation
+  if(Math.abs(pl.vx)>.5&&pl.og){pl.wt++;if(pl.wt>=7){pl.wf=(pl.wf+1)%3;pl.wt=0;}}
+  else{pl.wf=0;pl.wt=0;}
+  // Camera
+  cam.x=Math.max(0,Math.min(pl.x+PW/2-CW/2,WW-CW));
+  updHUD();
+}
+
+// ── Collision Helpers ──
+function rHit(ax,ay,aw,ah,bx,by,bw,bh){return ax<bx+bw&&ax+aw>bx&&ay<by+bh&&ay+ah>by;}
+function getSolids(){
+  var r=[];
+  for(var i=0;i<lv.gs.length;i++){var g=lv.gs[i];r.push({x:g.x,y:GY,w:g.w,h:80,ref:null});}
+  for(var j=0;j<lv.plats.length;j++){
+    var p=lv.plats[j];
+    if(p.type==='fake') continue; // FAKE platforms are NOT solid
+    if(!p.falling||p.ft>0) r.push({x:p.x,y:p.y,w:p.w,h:p.h,ref:p});
+  }
+  return r;
+}
+function resX(){
+  var sl=getSolids();
+  for(var i=0;i<sl.length;i++){
+    var r=sl[i];
+    if(!rHit(pl.x,pl.y+3,PW,PH-6,r.x,r.y,r.w,r.h)) continue;
+    if(pl.vx>0) pl.x=r.x-PW; else if(pl.vx<0) pl.x=r.x+r.w;
+    pl.vx=0;
+  }
+}
+function resY(){
+  var pog=pl.og; pl.og=false;
+  var sl=getSolids();
+  for(var i=0;i<sl.length;i++){
+    var r=sl[i];
+    if(!rHit(pl.x+3,pl.y,PW-6,PH,r.x,r.y,r.w,r.h)) continue;
+    if(pl.vy>0&&(pl.y+PH-pl.vy)<=r.y+6){
+      pl.y=r.y-PH; pl.vy=0; pl.og=true;
+      if(!pog) sfx('land');
+      // Trigger falling platform (0.2s = 12 frames at 60fps)
+      if(r.ref&&r.ref.type==='falling'&&!r.ref.falling){r.ref.falling=true;r.ref.ft=12;}
+    } else if(pl.vy<0&&(pl.y-pl.vy)>=r.y+r.h-4){pl.y=r.y+r.h;pl.vy=0;}
+  }
+}
+
+// ── Enemy & Platform Updates ──
+function updEnemies(){
+  for(var i=0;i<lv.enemies.length;i++){
+    var e=lv.enemies[i]; if(!e.alive) continue;
+    e.x+=e.vx;
+    if(e.x<=e.px1){e.x=e.px1;e.vx=Math.abs(e.vx);}
+    if(e.x+24>=e.px2){e.x=e.px2-24;e.vx=-Math.abs(e.vx);}
+  }
+}
+function updPlats(){
+  for(var i=0;i<lv.plats.length;i++){
+    var p=lv.plats[i]; if(!p.falling) continue;
+    if(p.ft>0) p.ft--; else{p.fy+=.45;p.y+=p.fy;}
+    if(p.y>CH+200){p.y=p.oy;p.fy=0;p.ft=0;p.falling=false;}
+  }
+}
+
+// ── Hearts / Death / Win ──
+function loseHeart(){
+  if(pl.inv>0) return;
+  lives--; pl.inv=85; pl.flash=85; shk=18;
+  sfx('hit'); spawnPtc(pl.x+PW/2,pl.y+PH/2,'#f44336',10,4);
+  updHUD(); if(lives<=0){dc++;doGO();}
+}
+function doGO(){
+  if(ST==='GAMEOVER') return;
+  ST='GAMEOVER'; clearInterval(qtInt);
+  document.getElementById('qo').classList.remove('on');
+  var el=Math.floor((Date.now()-st0)/1000);
+  document.getElementById('gom').innerText=RAGES[Math.floor(Math.random()*RAGES.length)]+'\n\n Waktu: '+el+'s  |  Kematian ke-'+dc;
+  document.getElementById('gs').classList.add('on');
+  shakeC();
+}
+function doWin(){
+  if(ST==='WIN') return;
+  ST='WIN'; sfx('win'); clearInterval(qtInt);
+  document.getElementById('qo').classList.remove('on');
+  var el=Math.floor((Date.now()-st0)/1000);
+  var qp=lv.gates.filter(function(g){return g.passed;}).length;
+  document.getElementById('wst').innerText='Waktu: '+Math.floor(el/60)+'m '+(el%60)+'s\nKematian: '+dc+'x\nQuiz Lulus: '+qp+'/4\nNyawa Tersisa: '+lives;
+  document.getElementById('ws').classList.add('on');
+}
+function shakeC(){var c=document.getElementById('gc');c.classList.add('csk');setTimeout(function(){c.classList.remove('csk');},400);}
+
+// ── Quiz System ──
+function triggerQuiz(g){
+  if(ST!=='PLAYING') return;
+  g.triggered=true; cg=g; ST='QUIZ'; pl.vx=0; sfx('quiz');
+  var bank=BANKS[g.cat];
+  g.qi=Math.floor(Math.random()*bank.length);
+  var q=bank[g.qi], cat=CATS[g.cat];
+  var badge=document.getElementById('qbdg');
+  badge.textContent=cat.name;
+  badge.style.cssText='background:'+cat.col+'22;color:'+cat.col+';border:1px solid '+cat.brd;
+  document.getElementById('qq').textContent=q.q;
+  var LBL=['A','B','C','D'];
+  for(var i=0;i<4;i++){
+    var b=document.getElementById('qb'+i);
+    b.textContent=LBL[i]+'. '+(q.opts[i]||'');
+    b.style.borderColor=cat.col; b.style.color='#e8eaf6';
+    b.className='qb'; b.disabled=false;
+    b.style.display=i<q.opts.length?'':'none';
+  }
+  document.getElementById('qfb').textContent='';
+  qtLeft=15; qlk=false; updQt();
+  clearInterval(qtInt);
+  qtInt=setInterval(function(){qtLeft--;updQt();if(qtLeft<=0){clearInterval(qtInt);answerQ(-1);}},1000);
+  document.getElementById('qo').classList.add('on');
+}
+function updQt(){
+  var f=document.getElementById('qtf'),n=document.getElementById('qtn');
+  var p=(qtLeft/15)*100;
+  f.style.width=p+'%';
+  f.style.background=p>60?'#4caf50':p>30?'#ff9800':'#f44336';
+  n.textContent=qtLeft; n.style.color=qtLeft<=4?'#f44336':'#eee';
+}
+function answerQ(idx){
+  if(qlk||ST!=='QUIZ'||!cg) return;
+  qlk=true; clearInterval(qtInt);
+  var q=BANKS[cg.cat][cg.qi], ok=(idx===q.ans&&idx!==-1);
+  for(var i=0;i<4;i++){
+    var b=document.getElementById('qb'+i); b.disabled=true;
+    if(i===q.ans) b.classList.add('ok'); else if(i===idx) b.classList.add('ng');
+  }
+  var fb=document.getElementById('qfb');
+  if(ok){
+    sfx('ok'); fb.textContent='BENAR! Gate terbuka!'; fb.style.color='#4caf50';
+    setTimeout(function(){cg.passed=true;document.getElementById('qo').classList.remove('on');ST='PLAYING';cg=null;sfx('gate');},1100);
+  } else {
+    sfx('ng');
+    fb.textContent=(idx===-1?'WAKTU HABIS!':'SALAH!')+' -1 Nyawa & Knockback!';
+    fb.style.color='#f44336'; shakeC();
+    setTimeout(function(){
+      document.getElementById('qo').classList.remove('on');
+      ST='PLAYING'; loseHeart(); pl.vx=-8; pl.vy=-5; cg.triggered=false; cg=null;
+    },1300);
+  }
+}
+
+// ── HUD Update ──
+function updHUD(){
+  for(var i=1;i<=3;i++){
+    var h=document.getElementById('h'+i);
+    if(i<=lives) h.classList.remove('e'); else h.classList.add('e');
+  }
+  var p=Math.min(100,Math.floor((pl.x/FX)*100));
+  document.getElementById('pf').style.width=p+'%';
+  document.getElementById('pp').textContent=p+'%';
+}
+
+// ══════════════════════════════════════════
+//  RENDERING - All use ctx.drawImage() 9-param
+//  ctx.imageSmoothingEnabled = false for pixel-art
+//  ctx.scale(-1,1) for left-facing sprites
+// ══════════════════════════════════════════
+function drwBG(){
+  var g=X.createLinearGradient(0,0,0,CH);
+  g.addColorStop(0,'#040912'); g.addColorStop(.65,'#0c1a33'); g.addColorStop(1,'#142010');
+  X.fillStyle=g; X.fillRect(0,0,CW,CH);
+  // Pixel-art stars (use fillRect for crisp pixels)
+  X.imageSmoothingEnabled=false;
+  for(var i=0;i<stars.length;i++){
+    var s=stars[i];
+    var sx=((s.x-cam.x*.28)%WW+WW)%WW%CW;
+    var br=Math.floor((0.3+s.r*.25)*10)/10;
+    X.fillStyle='rgba(255,255,255,'+br+')';
+    X.fillRect(Math.floor(sx),Math.floor(s.y),Math.ceil(s.r*2),Math.ceil(s.r*2));
+  }
+}
+function drwMts(){
+  X.fillStyle='rgba(12,22,50,0.55)';
+  var sp=450, hs=[160,290,210,340,245,300,185];
+  for(var i=-1;i<Math.ceil(CW/sp)+2;i++){
+    var mx=i*sp-((cam.x*.18)%sp), h=hs[Math.abs(i)%hs.length];
+    X.beginPath(); X.moveTo(mx,CH); X.lineTo(mx+sp/2,CH-h); X.lineTo(mx+sp,CH); X.fill();
+  }
+}
+function drwGround(){
+  X.imageSmoothingEnabled=false;
+  for(var gi=0;gi<lv.gs.length;gi++){
+    var g=lv.gs[gi], sx=g.x-cam.x;
+    if(sx>CW||sx+g.w<0) continue;
+    var cols=Math.ceil(g.w/16);
+    for(var c=0;c<cols;c++){
+      var dx=Math.floor(sx+c*16);
+      if(dx>CW||dx+16<0) continue;
+      // ctx.drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh) -- 9 param
+      X.drawImage(SPR.ground,0,0,16,16,dx,GY,16,16);
+      X.drawImage(SPR.dirt,0,0,16,16,dx,GY+16,16,16);
+      X.drawImage(SPR.dirt,0,0,16,16,dx,GY+32,16,16);
+      X.drawImage(SPR.dirt,0,0,16,16,dx,GY+48,16,16);
+    }
+  }
+}
+function drwPlats(){
+  X.imageSmoothingEnabled=false;
+  for(var i=0;i<lv.plats.length;i++){
+    var p=lv.plats[i], sx=p.x-cam.x;
+    if(sx>CW||sx+p.w<0) continue;
+    var shk=(p.falling&&p.ft>0&&p.ft<10)?Math.sin(p.ft*2.2)*4:0;
+    X.save();
+    if(p.falling&&p.ft<=0) X.globalAlpha=Math.max(0,1-p.fy/15);
+    var spr=p.type==='falling'?SPR.platFall:(p.type==='fake'?SPR.platFake:SPR.platform);
+    var cols=Math.ceil(p.w/16);
+    for(var c=0;c<cols;c++){
+      var dx=Math.floor(sx+c*16+shk);
+      // 9-param drawImage: cut tile from 16x8 sprite, draw at platform position
+      X.drawImage(spr,0,0,16,8,dx,p.y,16,8);
+    }
+    // Warning countdown bar for falling platforms
+    if(p.type==='falling'&&p.falling&&p.ft>0){
+      X.fillStyle='rgba(255,235,59,0.85)';
+      X.fillRect(sx+shk,p.y,Math.floor((p.ft/12)*p.w),3);
+    }
+    X.restore();
+  }
+}
+function drwSpikes(){
+  X.imageSmoothingEnabled=false;
+  for(var i=0;i<lv.spikes.length;i++){
+    var s=lv.spikes[i], sx=s.x-cam.x;
+    if(sx>CW||sx+s.w<0) continue;
+    var cnt=Math.floor(s.w/16);
+    for(var c=0;c<cnt;c++){
+      // 9-param drawImage: each spike tile is 16x16
+      X.drawImage(SPR.spike,0,0,16,16,Math.floor(sx+c*16),s.y,16,16);
+    }
+  }
+}
+function drwGates(){
+  var t=Date.now()/1000;
+  for(var i=0;i<lv.gates.length;i++){
+    var g=lv.gates[i];
+    if(g.passed) continue;
+    var sx=g.x-cam.x;
+    if(sx>CW+50||sx<-60) continue;
+    var cat=CATS[g.cat], pulse=.65+.35*Math.sin(t*3);
+    X.save();
+    // Beam glow
+    X.globalAlpha=pulse*.4;
+    var grd=X.createLinearGradient(sx-10,0,sx+30,0);
+    grd.addColorStop(0,'transparent'); grd.addColorStop(.4,cat.col);
+    grd.addColorStop(.6,cat.col); grd.addColorStop(1,'transparent');
+    X.fillStyle=grd; X.fillRect(sx-10,0,40,GY);
+    // Gate bars
+    X.globalAlpha=pulse;
+    X.fillStyle=cat.col; X.fillRect(sx-8,0,8,GY); X.fillRect(sx+12,0,8,GY);
+    // Border glow
+    X.globalAlpha=1; X.shadowBlur=20; X.shadowColor=cat.col;
+    X.strokeStyle=cat.col; X.lineWidth=2; X.strokeRect(sx-8,0,28,GY);
+    X.restore();
+    // Labels
+    X.save();
+    X.font='bold 10px monospace'; X.fillStyle=cat.col; X.textAlign='center';
+    X.shadowBlur=8; X.shadowColor=cat.col;
+    X.fillText('QUIZ',sx+6,GY-18); X.fillText('GATE',sx+6,GY-7);
+    X.font='bold 20px sans-serif';
+    for(var yi=55;yi<GY-65;yi+=55){
+      X.globalAlpha=.8+.2*Math.sin(t*2+yi);
+      X.fillText('!',sx+6,yi+Math.sin(t*1.5+yi*.01)*5);
+    }
+    X.restore();
+  }
+}
+function drwEnemies(){
+  X.imageSmoothingEnabled=false;
+  var t=Date.now();
+  for(var i=0;i<lv.enemies.length;i++){
+    var e=lv.enemies[i];
+    if(!e.alive) continue;
+    var sx=e.x-cam.x;
+    if(sx>CW+30||sx+24<0) continue;
+    var frame=Math.floor(t/300)%2;
+    var facing=e.vx>0?1:-1;
+    X.save();
+    if(facing<0){
+      // ctx.scale(-1,1) flip for left-facing sprite
+      X.translate(sx+24,e.y); X.scale(-1,1);
+      // 9-param drawImage: cut frame from enemy sprite sheet
+      X.drawImage(SPR.enemy,frame*16,0,16,16,0,0,24,24);
+    } else {
+      X.drawImage(SPR.enemy,frame*16,0,16,16,sx,e.y,24,24);
+    }
+    X.restore();
+  }
+}
+function drwPlayer(){
+  if(!pl) return;
+  if(pl.inv>0&&Math.floor(pl.inv/4)%2===0) return; // invincibility blink
+  X.imageSmoothingEnabled=false;
+  var FW=SPR.pFW, FH=SPR.pFH;
+  var sx=pl.x-cam.x, sy=pl.y;
+  // Determine animation frame
+  var frame;
+  if(!pl.og) frame=4;                       // Jumping frame
+  else if(Math.abs(pl.vx)>.5) frame=pl.wf+1; // Walk frames 1-3
+  else frame=0;                              // Stand frame
+  var srcX=frame*FW;
+  X.save();
+  if(pl.dying){
+    // Death spin animation
+    X.translate(sx+PW/2,sy+PH/2); X.rotate(pl.dt*.15);
+    if(pl.face<0){
+      // Flip for left-facing: ctx.scale(-1,1) then drawImage 9-param
+      X.scale(-1,1);
+      X.drawImage(SPR.player,srcX,0,FW,FH,-PW/2,-PH/2,PW,PH);
+    } else {
+      X.drawImage(SPR.player,srcX,0,FW,FH,-PW/2,-PH/2,PW,PH);
+    }
+  } else {
+    if(pl.face<0){
+      // Left-facing: translate to right edge, scale(-1,1), draw from x=0
+      X.translate(sx+PW,sy); X.scale(-1,1);
+      X.drawImage(SPR.player,srcX,0,FW,FH,0,0,PW,PH);
+    } else {
+      // Right-facing: normal 9-param drawImage
+      X.drawImage(SPR.player,srcX,0,FW,FH,sx,sy,PW,PH);
+    }
+  }
+  X.restore();
+  // Hit flash overlay
+  if(pl.flash>0&&Math.floor(pl.flash/3)%2){
+    X.save(); X.globalAlpha=0.55; X.fillStyle='#ff5252';
+    X.fillRect(sx,sy,PW,PH); X.restore();
+  }
+}
+function drwFinish(){
+  var sx=FX-cam.x;
+  if(sx>CW+20||sx<-60) return;
+  // Pole
+  X.fillStyle='#9e9e9e'; X.fillRect(sx,GY-170,6,170);
+  // Checkerboard flag
+  var ts=15;
+  for(var ty=0;ty<4;ty++) for(var tx=0;tx<3;tx++){
+    X.fillStyle=(tx+ty)%2?'#fff':'#f44336';
+    X.fillRect(sx+6+tx*ts,GY-170+ty*ts,ts,ts);
+  }
+  X.save();
+  X.font='bold 13px monospace'; X.fillStyle='#ffd54f'; X.textAlign='center';
+  X.shadowBlur=12; X.shadowColor='#ffd54f';
+  X.fillText('FINISH!',sx+20,GY-10);
+  X.restore();
+}
+function drwZone(){
+  var zx=pl?pl.x:0, z='';
+  if(zx<680)       z='ZONA TUTORIAL';
+  else if(zx<1020) z='LOMPAT!';
+  else if(zx<2295) z='ZONA PLATFORM';
+  else if(zx<3255) z='ZONA MUSUH';
+  else if(zx<4280) z='ZONA BERBAHAYA';
+  else if(zx<5200) z='FINAL GAUNTLET';
+  else             z='HAMPIR FINISH!';
+  X.save();
+  X.font='8px "Press Start 2P",monospace';
+  X.fillStyle='rgba(255,255,255,0.2)'; X.textAlign='center';
+  X.fillText(z,CW/2,CH-10); X.restore();
+}
+
+// ── Game Loop ──
+function loop(){
+  requestAnimationFrame(loop);
+  X.clearRect(0,0,CW,CH);
+  drwBG();
+  if(ST==='START'||ST==='GAMEOVER'||ST==='WIN') return;
+  drwMts();
+  var doShk=false;
+  if(shk>0){doShk=true;X.save();X.translate((Math.random()-.5)*7,(Math.random()-.5)*4);shk--;}
+  drwGround(); drwPlats(); drwSpikes(); drwGates(); drwEnemies(); drwPlayer(); drwPtc(); drwFinish(); drwZone();
+  if(doShk) X.restore();
+  if(ST==='PLAYING'){updPl();updEnemies();updPlats();updPtc();}
+}
+
+// ── Public Entry Points ──
+function startGame(){
+  initAudio(); buildSprites(); initGame(); ST='PLAYING';
+  document.getElementById('ss').classList.remove('on');
+  updHUD();
+}
+function restartGame(){
+  initAudio(); buildSprites(); initGame(); ST='PLAYING';
+  document.getElementById('gs').classList.remove('on');
+  document.getElementById('ws').classList.remove('on');
+  document.getElementById('qo').classList.remove('on');
+  updHUD();
+}
+
+// ── Boot ──
+document.getElementById('ss').classList.add('on');
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
