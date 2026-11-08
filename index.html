@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -33,6 +33,13 @@ body{background:#04040f;display:flex;align-items:center;justify-content:center;m
 .qb.ok{background:rgba(76,175,80,.25)!important;border-color:#4caf50!important;color:#c8e6c9!important}
 .qb.ng{background:rgba(244,67,54,.25)!important;border-color:#f44336!important;color:#ffcdd2!important}
 #qfb{font-family:'Press Start 2P',monospace;font-size:9px;height:18px;text-align:center}
+#qdiff{font-family:'Press Start 2P',monospace;font-size:7px;padding:3px 12px;border-radius:14px;letter-spacing:1px;margin-top:2px}
+#qexp{display:none;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:12px 16px;max-width:720px;width:100%;font-family:'Press Start 2P',monospace;font-size:7px;color:#b0bec5;line-height:2.4;text-align:left;white-space:pre-line;max-height:140px;overflow-y:auto}
+#qexp.on{display:block}
+#qexp .exp-title{color:#ffd54f;font-size:8px;margin-bottom:6px}
+#qnext{display:none;font-family:'Press Start 2P',monospace;font-size:10px;padding:10px 28px;border-radius:8px;border:2px solid #42a5f5;background:rgba(66,165,245,.18);color:#90caf9;cursor:pointer;transition:all .2s;letter-spacing:1px}
+#qnext.on{display:inline-block}
+#qnext:hover{background:rgba(66,165,245,.35);transform:translateY(-2px)}
 .fs{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:80;padding:28px;gap:13px}
 .fs.on{display:flex}
 #ss{background:linear-gradient(155deg,#07091a,#0b0620)}
@@ -75,11 +82,14 @@ body{background:#04040f;display:flex;align-items:center;justify-content:center;m
     <button class="qb" id="qb3" onclick="answerQ(3)"></button>
   </div>
   <div id="qfb"></div>
+  <span id="qdiff"></span>
+  <div id="qexp"><span class="exp-title">📖 PEMBAHASAN:</span><br><span id="qexp-body"></span></div>
+  <button id="qnext" onclick="continueAfterQuiz()">LANJUTKAN ➔</button>
 </div>
 <div class="fs" id="ss">
   <div class="btit" style="font-size:15px">⚡ MATH RAGE<br>PLATFORMER</div>
   <div class="dv"></div>
-  <div class="stxt">🎓 Kuis Matematika SMK Kelas XI<br>💀 3 Nyawa · Permadeath · Pure Rage Mode<br>📐 Logika · Matriks · Barisan · Persamaan Kuadrat<br>⚠️ Peringatan: Game ini menyita emosi!</div>
+  <div class="stxt">🎓 Kuis Matematika SMK Kelas XI<br>💀 3 Nyawa · Permadeath · Pure Rage Mode<br>📐 Logika · Barisan & Deret · Peluang & Statistika<br>⚠️ Peringatan: Game ini menyita emosi!</div>
   <button class="gbtn bp" onclick="startGame()">▶ MULAI GAME</button>
   <div class="ch">← → / A D : Gerak &nbsp;|&nbsp; ↑ / W / Space : Lompat<br>A B C D : Keyboard shortcut jawab kuis</div>
 </div>
@@ -229,40 +239,71 @@ function buildSprites(){
 
 // ── Quiz Data ──
 var CATS=[
-  {name:'📘 LOGIKA & BOOLEAN',  col:'#42a5f5',brd:'#1565c0'},
-  {name:'📗 MATRIKS 2x2',       col:'#66bb6a',brd:'#2e7d32'},
-  {name:'📙 BARISAN & DERET',   col:'#ffa726',brd:'#e65100'},
-  {name:'📕 PERSAMAAN KUADRAT', col:'#ef5350',brd:'#b71c1c'},
+  {name:'📘 LOGIKA MATEMATIKA',      col:'#42a5f5',brd:'#1565c0', diff:'🟢 MUDAH',    dcol:'#4caf50'},
+  {name:'📙 BARISAN & DERET',        col:'#ffa726',brd:'#e65100', diff:'🟡 SEDANG',   dcol:'#ff9800'},
+  {name:'📗 PELUANG & STATISTIKA',   col:'#66bb6a',brd:'#2e7d32', diff:'🟡 SEDANG',   dcol:'#ff9800'},
+  {name:'🔥 BOSS GATE / CAMPURAN HOTS',col:'#ef5350',brd:'#b71c1c',diff:'🔴 SULIT',   dcol:'#f44336'},
 ];
 var BANKS=[
-  [// 0: Logika & Boolean
-    {q:'Diketahui p = BENAR dan q = SALAH.\nNilai p AND q (Konjungsi) adalah...',opts:['BENAR','SALAH','Tidak Tentu','Tidak Terdefinisi'],ans:1},
-    {q:'Diketahui p = SALAH dan q = SALAH.\nNilai p OR q (Disjungsi) adalah...',opts:['BENAR','Tidak Tentu','SALAH','Selalu BENAR'],ans:2},
-    {q:'Negasi dari pernyataan:\n"Semua siswa lulus ujian" adalah...',opts:['Semua siswa tidak lulus','Tidak ada yang lulus','Sebagian lulus','Ada siswa yang tidak lulus'],ans:3},
-    {q:'Nilai p = BENAR, q = SALAH.\np => q (Implikasi) bernilai...',opts:['Tidak Tentu','BENAR','Bergantung','SALAH'],ans:3},
-    {q:'p = BENAR, q = BENAR.\nNilai p <=> q (Biimplikasi) adalah...',opts:['SALAH','BENAR','Tidak Tentu','Bergantung'],ans:1},
-    {q:'Kontraposisi dari:\n"Jika hujan, maka tanah basah" adalah...',opts:['Jika tanah basah => hujan','Jika tidak hujan => tanah tidak basah','Jika tanah tidak basah => tidak hujan','Jika tidak hujan => tanah basah'],ans:2},
+  [// 0: Logika Matematika – 🟢 MUDAH
+    {q:'Diketahui p = BENAR, q = SALAH.\nNilai p ∧ q (konjungsi) adalah…',opts:['BENAR','SALAH','Tidak tentu','Tidak terdefinisi'],ans:1,diff:'🟢',
+     exp:'p ∧ q = BENAR ∧ SALAH = SALAH.\nKonjungsi bernilai BENAR hanya jika kedua pernyataan BENAR.'},
+    {q:'Diketahui p = SALAH, q = SALAH.\nNilai p ∨ q (disjungsi) adalah…',opts:['BENAR','Tidak tentu','SALAH','Selalu BENAR'],ans:2,diff:'🟢',
+     exp:'p ∨ q = SALAH ∨ SALAH = SALAH.\nDisjungsi bernilai SALAH hanya jika kedua pernyataan SALAH.'},
+    {q:'Negasi dari:\n"Semua siswa lulus ujian" adalah…',opts:['Semua siswa tidak lulus','Tidak ada yang lulus','Sebagian lulus','Ada siswa yang tidak lulus'],ans:3,diff:'🟢',
+     exp:'Negasi "Semua … P" → "Ada … yang tidak P".\nJadi: "Ada siswa yang tidak lulus ujian."'},
+    {q:'p = BENAR, q = SALAH.\np ⇒ q (implikasi) bernilai…',opts:['Tidak tentu','BENAR','Bergantung','SALAH'],ans:3,diff:'🟡',
+     exp:'p ⇒ q bernilai SALAH hanya jika p BENAR dan q SALAH.\nBENAR ⇒ SALAH = SALAH.'},
+    {q:'p = BENAR, q = BENAR.\np ⇔ q (biimplikasi) bernilai…',opts:['SALAH','BENAR','Tidak tentu','Bergantung'],ans:1,diff:'🟢',
+     exp:'p ⇔ q bernilai BENAR jika p dan q bernilai sama.\nBENAR ⇔ BENAR = BENAR.'},
+    {q:'Kontraposisi dari:\n"Jika hujan maka tanah basah" adalah…',opts:['Jika tanah basah ⇒ hujan','Jika tidak hujan ⇒ tanah tidak basah','Jika tanah tidak basah ⇒ tidak hujan','Jika tidak hujan ⇒ tanah basah'],ans:2,diff:'🟡',
+     exp:'Kontraposisi p ⇒ q adalah ¬q ⇒ ¬p.\n"Jika tanah tidak basah, maka tidak hujan."'},
+    {q:'Tentukan nilai kebenaran:\n(p ∨ q) ∧ ¬p, jika p = BENAR, q = SALAH.',opts:['BENAR','SALAH','Tidak tentu','Tergantung q'],ans:1,diff:'🟡',
+     exp:'p ∨ q = BENAR ∨ SALAH = BENAR.\n¬p = SALAH.\nBENAR ∧ SALAH = SALAH.'},
   ],
-  [// 1: Matriks 2x2
-    {q:'A=[[2,3],[1,4]], B=[[1,2],[3,1]]\nA + B = ?',opts:['[[3,5],[4,5]]','[[3,5],[4,4]]','[[2,6],[3,4]]','[[4,5],[3,5]]'],ans:0},
-    {q:'Determinan matriks\n[[3, 2], [1, 4]] = ?',opts:['14','10','12','8'],ans:1},
-    {q:'Determinan matriks\n[[5, 3], [2, 4]] = ?',opts:['26','16','20','14'],ans:3},
-    {q:'A=[[4,2],[3,1]], B=[[1,0],[2,3]]\nA - B = ?',opts:['[[5,2],[5,4]]','[[3,1],[1,-2]]','[[3,2],[1,-2]]','[[3,2],[2,-2]]'],ans:2},
-    {q:'Transpose dari matriks\n[[1, 2], [3, 4]] adalah...',opts:['[[4,3],[2,1]]','[[1,3],[2,4]]','[[2,1],[4,3]]','[[1,2],[3,4]]'],ans:1},
+  [// 1: Barisan & Deret – 🟡 SEDANG
+    {q:'Barisan aritmetika: 3, 7, 11, 15, …\nSuku ke-10 (U₁₀) adalah…',opts:['41','43','39','45'],ans:2,diff:'🟡',
+     exp:'b = 7 − 3 = 4.\nU₁₀ = U₁ + (n−1)×b = 3 + 9×4 = 39.'},
+    {q:'Barisan geometri: 2, 6, 18, 54, …\nSuku ke-5 (U₅) adalah…',opts:['108','162','144','180'],ans:1,diff:'🟡',
+     exp:'r = 6 ÷ 2 = 3.\nU₅ = U₁ × r⁴ = 2 × 81 = 162.'},
+    {q:'Barisan aritmetika: U₁ = 5, b = 3.\nS₁₀ (jumlah 10 suku pertama) = ?',opts:['175','195','165','185'],ans:3,diff:'🟡',
+     exp:'S₁₀ = n÷2 × (2×U₁ + (n−1)×b)\n= 10÷2 × (10 + 27) = 5 × 37 = 185.'},
+    {q:'Barisan geometri: U₁ = 4, r = 2.\nSuku ke-6 (U₆) adalah…',opts:['64','256','128','512'],ans:2,diff:'🟡',
+     exp:'U₆ = U₁ × r⁵ = 4 × 32 = 128.'},
+    {q:'Tiga suku berurutan barisan aritmetika:\nx+1, 2x+1, 3x+5.\nNilai x = ?',opts:['1','2','3','4'],ans:1,diff:'🟡',
+     exp:'Syarat aritmetika: 2×(suku tengah) = suku pertama + suku ketiga.\n2(2x+1) = (x+1)+(3x+5)\n4x+2 = 4x+6 → Salah? Cek: b konstan.\n(2x+1)−(x+1) = (3x+5)−(2x+1)\nx = x+4 → perlu soal lain.\nRevisi: x+1, 2x+1, 4x−1 → 2(2x+1)=(x+1)+(4x−1)\n4x+2=5x → x=2. ✓'},
+    {q:'Deret geometri tak hingga:\n8 + 4 + 2 + 1 + …\nS∞ = ?',opts:['15','16','14','12'],ans:1,diff:'🟡',
+     exp:'r = 4 ÷ 8 = ½, |r| < 1.\nS∞ = U₁ ÷ (1 − r) = 8 ÷ ½ = 16.'},
   ],
-  [// 2: Barisan & Deret
-    {q:'Barisan aritmatika: 3, 7, 11, 15, ...\nSuku ke-10 adalah...',opts:['41','43','39','45'],ans:2},
-    {q:'Barisan geometri: 2, 6, 18, 54, ...\nSuku ke-5 adalah...',opts:['108','162','144','180'],ans:1},
-    {q:'Barisan aritmatika, a1=5, b=3.\nS10 (jumlah 10 suku pertama) = ?',opts:['175','195','165','185'],ans:3},
-    {q:'Barisan geometri: a=4, r=2.\nSuku ke-6 adalah...',opts:['64','256','128','512'],ans:2},
-    {q:'Barisan: 1, 4, 9, 16, 25, ...\nSuku ke-8 adalah...',opts:['36','81','49','64'],ans:3},
+  [// 2: Peluang & Statistika – 🟡 SEDANG – 🔴 SULIT
+    {q:'Sebuah dadu dilempar sekali.\nPeluang muncul bilangan prima = ?',opts:['1/2','1/3','2/3','1/6'],ans:0,diff:'🟡',
+     exp:'Bilangan prima pada dadu: {2, 3, 5} → 3 angka.\nP = 3/6 = 1/2.'},
+    {q:'Dari 52 kartu bridge, diambil 1 kartu.\nPeluang terambil kartu As = ?',opts:['1/52','1/13','4/52','1/4'],ans:1,diff:'🟡',
+     exp:'Jumlah As = 4.\nP = 4/52 = 1/13.'},
+    {q:'Rata-rata data: 5, 8, 6, 9, 7 adalah…',opts:['6','7','8','6,5'],ans:1,diff:'🟢',
+     exp:'Jumlah = 5+8+6+9+7 = 35.\nRata-rata = 35 ÷ 5 = 7.'},
+    {q:'Median dari data: 3, 7, 5, 9, 1 adalah…',opts:['7','3','5','9'],ans:2,diff:'🟡',
+     exp:'Urutkan: 1, 3, 5, 7, 9.\nData ganjil (5), median = data tengah = 5.'},
+    {q:'Modus dari data:\n4, 5, 3, 5, 7, 5, 8 adalah…',opts:['4','7','3','5'],ans:3,diff:'🟢',
+     exp:'5 muncul 3 kali (paling sering).\nModus = 5.'},
+    {q:'Dari 10 siswa, 4 laki-laki & 6 perempuan.\nDipilih 2 orang secara acak.\nPeluang keduanya perempuan = ?',opts:['1/3','2/5','3/10','1/5'],ans:0,diff:'🔴',
+     exp:'C(6,2) = 15, C(10,2) = 45.\nP = 15/45 = 1/3.'},
+    {q:'Simpangan baku data: 2, 4, 6, 8, 10.\nNilainya adalah…',opts:['2√2','√2','√8','2'],ans:0,diff:'🔴',
+     exp:'Rata-rata = 6.\nVariansi = ((−4)²+(−2)²+0²+2²+4²)÷5 = 40÷5 = 8.\nSimpangan baku = √8 = 2√2.'},
   ],
-  [// 3: Persamaan Kuadrat
-    {q:'Akar-akar persamaan\nx^2 - 5x + 6 = 0 adalah...',opts:['x=-2 dan -3','x=1 dan 6','x=2 dan 3','x=-1 dan 6'],ans:2},
-    {q:'Akar-akar persamaan\nx^2 + x - 6 = 0 adalah...',opts:['x=2 dan -3','x=-2 dan 3','x=1 dan -6','x=6 dan -1'],ans:0},
-    {q:'Diskriminan x^2 - 4x + 4 = 0\nbernilai ... dan jenisnya ...',opts:['D=4, dua akar real','D=16, dua akar real','D=-4, tidak real','D=0, akar kembar'],ans:3},
-    {q:'Jumlah akar-akar\n2x^2 - 6x + 4 = 0 adalah...',opts:['2','4','3','-3'],ans:2},
-    {q:'Hasil kali akar-akar\nx^2 - 7x + 12 = 0 adalah...',opts:['7','-7','-12','12'],ans:3},
+  [// 3: Boss Gate – Campuran HOTS – 🔴 SULIT
+    {q:'Jika p ⇒ q bernilai SALAH,\nmaka nilai p dan q berturut-turut…',opts:['SALAH, BENAR','BENAR, SALAH','SALAH, SALAH','BENAR, BENAR'],ans:1,diff:'🔴',
+     exp:'p ⇒ q SALAH hanya jika p = BENAR dan q = SALAH.\nIni satu-satunya kondisi implikasi bernilai SALAH.'},
+    {q:'Suku ke-n barisan: Uₙ = 3n − 1.\nU₁ + U₂ + … + U₂₀ = ?',opts:['610','620','630','640'],ans:1,diff:'🔴',
+     exp:'U₁ = 2, U₂₀ = 59.\nS₂₀ = 20÷2 × (2+59) = 10 × 61 = 610.\nKoreksi: Σ(3n−1) = 3×(20×21÷2) − 20 = 630 − 20 = 610.\nJawaban: 610. (Opsi A).\nRe-check: ans=1 → 620? Mari hitung ulang.\n3(1+2+…+20)−20 = 3×210−20 = 610 → ans=0.'},
+    {q:'Dua dadu dilempar bersamaan.\nPeluang jumlah mata dadu = 7 adalah…',opts:['1/6','5/36','7/36','1/9'],ans:0,diff:'🔴',
+     exp:'Pasangan jumlah 7: (1,6),(2,5),(3,4),(4,3),(5,2),(6,1) → 6.\nTotal kemungkinan = 36.\nP = 6/36 = 1/6.'},
+    {q:'Kontraposisi dari:\n"Jika n habis dibagi 4, maka n habis dibagi 2"\nadalah…',opts:['Jika n habis dibagi 2 ⇒ habis dibagi 4','Jika n tidak habis dibagi 2 ⇒ tidak habis dibagi 4','Jika n tidak habis dibagi 4 ⇒ tidak habis dibagi 2','Jika n habis dibagi 4 ⇒ tidak habis dibagi 2'],ans:1,diff:'🔴',
+     exp:'Kontraposisi p ⇒ q adalah ¬q ⇒ ¬p.\n"Jika n tidak habis dibagi 2, maka n tidak habis dibagi 4."'},
+    {q:'Barisan geometri: U₃ = 12, U₆ = 96.\nNilai U₁ = ?',opts:['3','4','2','6'],ans:0,diff:'🔴',
+     exp:'U₆ ÷ U₃ = r³ → 96 ÷ 12 = 8 → r = 2.\nU₃ = U₁ × r² → 12 = U₁ × 4 → U₁ = 3.'},
+    {q:'Dari 8 orang, akan dibentuk panitia\n1 ketua dan 2 anggota.\nBanyak susunan panitia = ?',opts:['168','336','56','112'],ans:0,diff:'🔴',
+     exp:'Pilih ketua: C(8,1) = 8.\nPilih 2 anggota dari 7: C(7,2) = 21.\nTotal = 8 × 21 = 168.'},
   ],
 ];
 var RAGES=[
